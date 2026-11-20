@@ -1,5 +1,7 @@
 # dsh-excalidraw
 
+[![verify](https://github.com/tu10ng/dsh-excalidraw/actions/workflows/verify.yml/badge.svg)](https://github.com/tu10ng/dsh-excalidraw/actions/workflows/verify.yml)
+
 A persistent Excalidraw board beside the conversation, in the left sidebar next
 to **工作树** and **终端** — with its own AI column.
 
