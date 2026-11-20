@@ -1,0 +1,583 @@
+/*
+ * dsh-excalidraw panel chrome.
+ *
+ * Every colour is a `--dsw-alias-*` token; the board itself keeps Excalidraw's
+ * own palette (it is a drawing application), but its islands and background are
+ * bridged to the host so the seam is a border, not a colour clash.
+ */
+
+.dsh-xc-root {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  background: var(--dsw-alias-bg-base);
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+}
+
+/* ---------------------------------------------------------------- header */
+
+.dsh-xc-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  height: 44px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--dsw-alias-border-l1);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.dsh-xc-eyebrow {
+  color: var(--dsw-alias-label-secondary);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+}
+
+.dsh-xc-name {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.dsh-xc-live {
+  color: var(--dsw-alias-state-idle-primary);
+  font-size: 9px;
+  line-height: 1;
+}
+
+.dsh-xc-live[data-on='1'] {
+  color: var(--dsw-alias-state-success-primary);
+}
+
+.dsh-xc-rev {
+  color: var(--dsw-alias-label-secondary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10.5px;
+}
+
+.dsh-xc-grow {
+  flex: 1 1 auto;
+  min-width: 8px;
+}
+
+.dsh-xc-chip {
+  flex: none;
+  height: 24px;
+  padding: 0 9px;
+  border: 1px solid var(--dsw-alias-border-l1);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--dsw-alias-label-secondary);
+  font: inherit;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.dsh-xc-chip:hover {
+  background: var(--dsw-alias-bg-layer-2);
+  color: var(--dsw-alias-label-primary);
+}
+
+.dsh-xc-chip[aria-pressed='true'] {
+  border-color: var(--dsw-alias-brand-primary);
+  color: var(--dsw-alias-brand-primary);
+}
+
+.dsh-xc-btn {
+  height: 30px;
+  padding: 0 14px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 8px;
+  background: var(--dsw-alias-bg-layer-1);
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.dsh-xc-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--dsw-alias-label-secondary);
+  font: inherit;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.dsh-xc-icon:hover,
+.dsh-xc-icon:focus-visible {
+  border-color: var(--dsw-alias-border-l1);
+  background: var(--dsw-alias-bg-layer-2);
+  color: var(--dsw-alias-label-primary);
+}
+
+/* A held element is a warning, not an error: it ends. */
+.dsh-xc-held {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  height: 24px;
+  padding: 0 9px;
+  border: 1px solid color-mix(in srgb, var(--dsw-alias-state-warn-primary) 45%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--dsw-alias-state-warn-primary) 10%, transparent);
+  color: var(--dsw-alias-state-warn-primary);
+  font: inherit;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.dsh-xc-held-action {
+  padding-left: 8px;
+  border-left: 1px solid color-mix(in srgb, var(--dsw-alias-state-warn-primary) 35%, transparent);
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ body */
+
+.dsh-xc-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* The right column is a split: canvas | handle | chat-or-events. */
+.dsh-xc-split {
+  grid-column: 2;
+  cursor: col-resize;
+  background: transparent;
+  touch-action: none;
+}
+
+.dsh-xc-split:hover,
+.dsh-xc-split:focus-visible {
+  background: var(--dsw-alias-border-l2);
+  outline: none;
+}
+
+.dsh-xc-side {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  border-left: 1px solid var(--dsw-alias-border-l1);
+  background: var(--dsw-alias-bg-base);
+}
+
+.dsh-xc-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  height: 36px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--dsw-alias-border-l1);
+}
+
+.dsh-xc-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 9px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--dsw-alias-label-secondary);
+  font: inherit;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.dsh-xc-tab:hover {
+  background: var(--dsw-alias-bg-layer-2);
+  color: var(--dsw-alias-label-primary);
+}
+
+.dsh-xc-tab[aria-selected='true'] {
+  border-color: var(--dsw-alias-border-l1);
+  background: var(--dsw-alias-bg-layer-1);
+  color: var(--dsw-alias-label-primary);
+  font-weight: 600;
+}
+
+.dsh-xc-badge {
+  min-width: 15px;
+  height: 15px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--dsw-alias-brand-primary);
+  color: var(--dsw-alias-bg-base);
+  font-size: 9.5px;
+  font-weight: 600;
+  line-height: 15px;
+  text-align: center;
+}
+
+/* ------------------------------------------------------------- AI column */
+
+.dsh-xchat {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.dsh-xchat-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  height: 34px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--dsw-alias-border-l1);
+  color: var(--dsw-alias-label-secondary);
+  font-size: 11.5px;
+}
+
+.dsh-xchat-head b {
+  color: var(--dsw-alias-label-primary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dsh-xchat-head code {
+  color: var(--dsw-alias-label-secondary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10px;
+}
+
+.dsh-xchat-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.dsh-xchat-embed {
+  display: flex;
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.dsh-xchat-embed > * {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.dsh-xchat-note {
+  padding: 16px 14px;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 11.5px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.dsh-xc-canvas {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  background: var(--dsw-alias-bg-base);
+}
+
+.dsh-xc-board {
+  position: absolute;
+  inset: 0;
+}
+
+.dsh-xc-board > .excalidraw {
+  width: 100%;
+  height: 100%;
+}
+
+/* Bridge Excalidraw's surface to the host palette; the canvas keeps its own. */
+.dsh-xc-canvas .excalidraw {
+  --island-bg-color: var(--dsw-alias-bg-layer-1);
+  --default-bg-color: var(--dsw-alias-bg-base);
+  --color-primary: var(--dsw-alias-brand-primary);
+}
+
+.dsh-xc-empty {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  pointer-events: none;
+  text-align: center;
+}
+
+.dsh-xc-empty span {
+  max-width: 320px;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+/* --------------------------------------------------------------- states */
+
+.dsh-xc-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 100%;
+  min-height: 120px;
+  padding: 24px;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12.5px;
+  text-align: center;
+}
+
+.dsh-xc-state p {
+  margin: 0;
+  max-width: 420px;
+  line-height: 1.6;
+}
+
+.dsh-xc-state-error {
+  color: var(--dsw-alias-state-error-primary);
+}
+
+.dsh-xc-spinner {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--dsw-alias-border-l2);
+  border-top-color: var(--dsw-alias-label-primary);
+  border-radius: 50%;
+  animation: dsh-xc-spin 0.8s linear infinite;
+}
+
+@keyframes dsh-xc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dsh-xc-spinner {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------- inspector */
+
+.dsh-xc-inspector {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100% - 24px);
+  padding: 6px 10px;
+  border: 1px solid var(--dsw-alias-border-l1);
+  border-radius: 10px;
+  background: var(--dsw-alias-bg-overlay);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  font-size: 11.5px;
+}
+
+.dsh-xc-inspector b {
+  color: var(--dsw-alias-label-primary);
+  font-weight: 600;
+}
+
+.dsh-xc-inspector-state {
+  color: var(--dsw-alias-label-secondary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dsh-xc-toast {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  z-index: 6;
+  transform: translateX(-50%);
+  max-width: min(70%, 460px);
+  padding: 7px 14px;
+  border: 1px solid var(--dsw-alias-border-l1);
+  border-radius: 999px;
+  background: var(--dsw-alias-bg-overlay);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14);
+  color: var(--dsw-alias-label-primary);
+  font-size: 11.5px;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ----------------------------------------------------------------- rail */
+
+.dsh-xr {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  background: var(--dsw-alias-bg-base);
+}
+
+.dsh-xr-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  height: 36px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--dsw-alias-border-l1);
+  font-size: 11.5px;
+}
+
+.dsh-xr-head b {
+  font-weight: 600;
+}
+
+.dsh-xr-list {
+  flex: 1 1 auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.dsh-xr-row {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: start;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--dsw-alias-border-l1);
+  cursor: grab;
+}
+
+.dsh-xr-row:hover {
+  background: var(--dsw-alias-bg-layer-2);
+}
+
+.dsh-xr-row[data-minor='1'] {
+  opacity: 0.62;
+}
+
+.dsh-xr-dot {
+  width: 6px;
+  height: 6px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: var(--dsw-alias-state-idle-primary);
+}
+
+.dsh-xr-row[data-failed='1'] .dsh-xr-dot {
+  background: var(--dsw-alias-state-error-primary);
+}
+
+.dsh-xr-main {
+  min-width: 0;
+}
+
+.dsh-xr-line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.dsh-xr-label {
+  color: var(--dsw-alias-label-primary);
+  font-size: 11px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dsh-xr-time {
+  flex: none;
+  margin-left: auto;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 10px;
+}
+
+.dsh-xr-summary {
+  margin: 2px 0 0;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 11.5px;
+  line-height: 1.45;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+}
+
+.dsh-xr-meta {
+  display: flex;
+  gap: 6px;
+  margin-top: 3px;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 10px;
+}
+
+.dsh-xr-meta code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 9.5px;
+  opacity: 0.8;
+}
+
+.dsh-xr-bad {
+  color: var(--dsw-alias-state-error-primary);
+}
+
+.dsh-xr-actions {
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 120ms ease-out;
+}
+
+.dsh-xr-row:hover .dsh-xr-actions,
+.dsh-xr-row:focus-within .dsh-xr-actions {
+  opacity: 1;
+}
+
+.dsh-xr-empty {
+  padding: 18px 12px;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 11.5px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dsh-xr-actions {
+    transition: none;
+  }
+}

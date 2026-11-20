@@ -1,0 +1,24 @@
+# dsh-excalidraw — bundle patch
+#
+# One Loader row (`excalidraw`). A profile's own cordis.patch.yml can target that
+# id to override `config` (replaced wholesale, not merged — restate every key you
+# keep) or set `disabled: true`.
+- insert:
+    - id: excalidraw
+      name: '@local/dsh-excalidraw'
+      config:
+        # Where boards live. Empty = $DSH_HOME/excalidraw. One directory per board,
+        # outside every project, so a board never mixes with code.
+        root: ''
+        # Board opened by the panel and addressed by the tools when they name none.
+        board: main
+        # How long the agent waits for the open panel to acknowledge a transaction.
+        waitMs: 1500
+        # A lease outlives this without acknowledgement, then the board unlocks itself.
+        leaseMs: 20000
+        # Session events the panel keeps live for its event rail.
+        maxEvents: 400
+        # Working directory of the board's own conversation. Empty = your home directory.
+        chatCwd: ''
+        # Explain the board to its conversation (a short note elsewhere).
+        guidance: true

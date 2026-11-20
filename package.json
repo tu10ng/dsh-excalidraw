@@ -1,0 +1,35 @@
+{
+  "name": "@local/dsh-excalidraw",
+  "version": "0.1.0",
+  "private": true,
+  "description": "An Excalidraw board beside the conversation: every DSH session event can land on it, and agent edits hold native per-element locks so a person keeps drawing undisturbed.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.19.0",
+    "dsh": ">=0.2.1-rc.1 <0.3.0"
+  },
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE",
+    "icon.svg"
+  ],
+  "scripts": {
+    "check": "node scripts/check.mjs",
+    "test": "node --test \"test/**/*.test.mjs\"",
+    "verify": "npm run check && npm test",
+    "build:vendor": "node scripts/build-vendor.mjs"
+  },
+  "dsh": {
+    "manifestVersion": 1,
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "client": { "platform": "web", "immediately": true }
+  }
+}
